@@ -1,7 +1,8 @@
+import json
+
 from spyne import Iterable, Integer, Unicode, rpc, Application, Service
 from spyne.protocol.http import HttpRpc
 from spyne.protocol.json import JsonDocument
-import json
 
 from serviceVehicles import Vehicle, VehicleList
 
@@ -25,10 +26,25 @@ list_vehicles = init_list_vehicles()
 
 
 class ServiceVehicles(Service):
+    # @brief : Return all vehicle of the list
+    # @return : list of dictionary
     @rpc(_returns=Unicode)
     def display_vehicles(self):
-        for vehicle in list_vehicles:
-            yield u'Marque %s' % vehicle.brand
+        data = list_vehicles.get_all()
+        for vehicle in data:
+            yield vehicle.get_dict()
+
+    # @brief : Return the vehicle if the model is found
+    # @return : list of dictionary
+    @rpc(Unicode, _returns=Unicode)
+    def get_vehicle_bymodel(self, model):
+        yield list_vehicles.find_bymodel(model)
+
+    # @brief : Return all vehicle of the input brand
+    # @return : list of dictionary
+    @rpc(Unicode, _returns=Unicode)
+    def get_vehicle_bybrand(self, brand):
+        return list_vehicles.find_bybrand(brand)
 
     @rpc(Unicode, Integer, _returns=Iterable(Unicode))
     def say_hello(self, name, times):

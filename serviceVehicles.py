@@ -22,6 +22,23 @@ class VehicleList:
     def get_vehicle(self, index):
         return self.data[index]
 
+    def get_all(self):
+        return self.data
+
+    def find_bymodel(self, model):
+        for vehicle in self.data:
+            if vehicle.model == model:
+                return vehicle.get_dict()
+
+    def find_bybrand(self, brand):
+        res = []
+        for vehicle in self.data:
+            if vehicle.brand == brand:
+                # res.append(vehicle.get_dict())
+                yield vehicle.get_dict()
+        # return res
+
+
     # @brief : return all vehicle of the input "brand"
     def get_vehicle_brand(self, brand):
         res = []
@@ -50,6 +67,12 @@ class Vehicle:
 
     def get_refill(self):
         return self.refill
+
+    def get_dict(self):
+        return {'Model' : self.model,
+                'Brand' : self.brand,
+                'Autonomy' : self.autonomy,
+                'Refill' : self.refill}
 
 
 # Développez et déployez un service SOAP qui propose une liste de véhicules avec ses
