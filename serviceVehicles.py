@@ -54,45 +54,44 @@ class Vehicle:
 
 # Développez et déployez un service SOAP qui propose une liste de véhicules avec ses
 # caractéristiques (autonomie, temps de chargement)
-class ServiceVehicles(ServiceBase):
-    # @rpc(VehicleList, _return=Unicode)
-    # def display_vehicles(self, list_vehicles):
-    #     for vehicle in list_vehicles:
-    #         print(vehicle.brand, vehicle.model, vehicle.battery)
-
-    @rpc(Unicode, Integer, _returns=Iterable(Unicode))
-    def say_hello(self, name, times):
-        for i in range(times):
-            yield u'Hello, %s' % name
-
-    @rpc(Integer, Integer, _returns=Integer)
-    def addition(self, a, b):
-        return a + b
-
-
-application = Application([ServiceVehicles], 'spyne.examples.hello.soap',
-                          in_protocol=Soap11(validator='lxml'),
-                          out_protocol=Soap11())
-wsgi_app = WsgiApplication(application)
-
-
-def init_list_vehicles():
-    list = VehicleList()
-
-    with open('D:\\Google drive\\M1\\S8\\802 - Archi\\TP\\vehicles.json', 'r') as f:
-        vehicles = json.load(f)
-
-    for car in vehicles:
-        list.add_vehicle(Vehicle(vehicles[car]["model"],
-                                 vehicles[car]["brand"],
-                                 vehicles[car]["autonomy"],
-                                 vehicles[car]["refill"]))
-
-    return list
+# class ServiceVehicles(ServiceBase):
+#     # @rpc(VehicleList, _return=Unicode)
+#     # def display_vehicles(self, list_vehicles):
+#     #     for vehicle in list_vehicles:
+#     #         print(vehicle.brand, vehicle.model, vehicle.battery)
+#
+#     @rpc(Unicode, Integer, _returns=Iterable(Unicode))
+#     def say_hello(self, name, times):
+#         for i in range(times):
+#             yield u'Hello, %s' % name
+#
+#     @rpc(Integer, Integer, _returns=Integer)
+#     def addition(self, a, b):
+#         return a + b
+#
+#
+# application = Application([ServiceVehicles], 'spyne.examples.hello.soap',
+#                           in_protocol=Soap11(validator='lxml'),
+#                           out_protocol=Soap11())
+# wsgi_app = WsgiApplication(application)
 
 
-if __name__ == '__main__':
-    list_vehicles = init_list_vehicles()
-    os.environ.get("PORT", 35000)
-    server = make_server('0.0.0.0', 35000, wsgi_app)
-    server.serve_forever()
+# def init_list_vehicles():
+#     list = VehicleList()
+#
+#     with open('vehicles.json', 'r') as f:
+#         vehicles = json.load(f)
+#
+#     for car in vehicles:
+#         list.add_vehicle(Vehicle(vehicles[car]["model"],
+#                                  vehicles[car]["brand"],
+#                                  vehicles[car]["autonomy"],
+#                                  vehicles[car]["refill"]))
+#
+#     return list
+
+
+# if __name__ == '__main__':
+#     os.environ.get("PORT", 35000)
+#     server = make_server('0.0.0.0', 35000, wsgi_app)
+#     server.serve_forever()

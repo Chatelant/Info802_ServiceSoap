@@ -1,21 +1,34 @@
 from spyne import Iterable, Integer, Unicode, rpc, Application, Service
 from spyne.protocol.http import HttpRpc
 from spyne.protocol.json import JsonDocument
+import json
+
+from serviceVehicles import Vehicle, VehicleList
 
 
-class HelloWorldService(Service):
-    @rpc(Unicode, Integer, _returns=Iterable(Unicode))
-    def hello(ctx, name, times):
-        name = name or ctx.udc.config['HELLO']
-        for i in range(times):
-            yield u'Hello, %s' % name
+def init_list_vehicles():
+    list = VehicleList()
+
+    with open('vehicles.json', 'r') as f:
+        vehicles = json.load(f)
+
+    for car in vehicles:
+        list.add_vehicle(Vehicle(vehicles[car]["model"],
+                                 vehicles[car]["brand"],
+                                 vehicles[car]["autonomy"],
+                                 vehicles[car]["refill"]))
+    print(list)
+    return list
+
+
+list_vehicles = init_list_vehicles()
 
 
 class ServiceVehicles(Service):
-    # @rpc(VehicleList, _return=Unicode)
-    # def display_vehicles(self, list_vehicles):
-    #     for vehicle in list_vehicles:
-    #         print(vehicle.brand, vehicle.model, vehicle.battery)
+    @rpc(_returns=Unicode)
+    def display_vehicles(self):
+        for vehicle in list_vehicles:
+            yield u'Marque %s' % vehicle.brand
 
     @rpc(Unicode, Integer, _returns=Iterable(Unicode))
     def say_hello(self, name, times):
@@ -37,7 +50,7 @@ def create_app(flask_app):
     user con defined context for each method call.
     """
     application = Application(
-        [HelloWorldService], 'spyne.examples.flask',
+        [ServiceVehicles], 'ServiceVehicles',
         # The input protocol is set as HttpRpc to make our service easy to call.
         in_protocol=HttpRpc(validator='soft'),
         out_protocol=JsonDocument(ignore_wrappers=True),
