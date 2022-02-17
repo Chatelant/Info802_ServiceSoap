@@ -1,75 +1,75 @@
 {
-  "SpringDacia": {
+  "Spring Dacia": {
     "model": "Spring",
     "brand": "Dacia",
     "year": 2021,
     "autonomy": 230,
     "refill": 420
   },
-  "RenaultTwingoElectric": {
+  "Renault Twingo Electric": {
     "model": "Twingo Electric",
     "brand": "Renault",
     "year": 2020,
     "autonomy": 190,
     "refill": 60
   },
-  "SkodaCitigoEiV": {
+  "Skoda Citigo e iV": {
     "model": "Citigo e iV",
     "brand": "Skoda",
     "year": 2019,
     "autonomy": 265,
     "refill": 37
   },
-  "SeatMiiElectric": {
+  "Seat Mii Electric": {
     "model": "Mii Electric",
     "brand": "Seat",
     "year": 2019,
     "autonomy": 260,
     "refill": 300
   },
-  "VolkswageneUp": {
+  "Volkswagen e-Up!": {
     "model": "e-Up!",
     "brand": "Volkswagen",
     "year": 2020,
     "autonomy": 260,
     "refill": 49
   },
-  "Fiat500e": {
+  "Fiat 500e": {
     "model": "500e",
     "brand": "Fiat",
     "year": 2020,
     "autonomy": 320,
     "refill": 180
   },
-  "SmartEQFortwo": {
+  "Smart EQ Fortwo": {
     "model": "EQ Fortwo",
     "brand": "Smart",
     "year": 2020,
     "autonomy": 135,
     "refill": 480
   },
-  "MGZSEV": {
+  "MG ZS EV": {
     "model": "ZS EV",
     "brand": "MG",
     "year": 2019,
     "autonomy": 440,
     "refill": 40
   },
-  "NissanLeaf": {
+  "Nissan Leaf": {
     "model": "Leaf",
     "brand": "Nissan",
     "year": 2010,
     "autonomy": 378,
     "refill": 420
   },
-  "OpelCorsaE": {
+  "Opel Corsa-e": {
     "model": "Corsa-e",
     "brand": "Opel",
     "year": 2014,
     "autonomy": 359,
     "refill": 30
   },
-  "TeslaModel3": {
+  "Tesla Model 3": {
     "model": "Model 3",
     "brand": "Tesla",
     "year": 2017,

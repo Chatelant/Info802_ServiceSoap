@@ -1,55 +1,70 @@
 import json
 
-from spyne import Application, rpc, Service, AnyDict, Integer
+from spyne import Application, rpc, Service, Integer, Iterable, Unicode
 from spyne.protocol.soap import Soap11
-from spyne.protocol.xml import XmlDocument
 from spyne.server.wsgi import WsgiApplication
 
 
+class VehicleList:
+    def __init__(self):
+        self.v_list = []
+
+
+class Vehicle:
+    def __init__(self, model, brand, autonomy, refill):
+        self.model = model
+        self.brand = brand
+        self.autonomy = autonomy
+        self.refill = refill
+
+
 def init_list_vehicles():
-    v_dict = {}
+    v_list = []
 
     with open('vehicles.json', 'r') as f:
         vehicles = json.load(f)
 
     for car in vehicles:
-        car_info = {"model": vehicles[car]["model"],
-                "brand": vehicles[car]["brand"],
-                "autonomy": vehicles[car]["autonomy"],
-                "refill": vehicles[car]["refill"]}
-        v_dict[car] = car_info
-        # v_dict.append(car)
+        car_info = str(vehicles[car]["brand"]) + ";" + str(vehicles[car]["model"]) + ";" + str(vehicles[car]["autonomy"]) + ";" + str(vehicles[car]["refill"])
+        v_list.append(car_info)
 
-    return v_dict
+    return v_list
+
+
+def get_names_vehicles(v_list):
+    n_list = []
+
+    for vehicle in v_list:
+        info = vehicle.split(";")
+        name = info[0] + " " + info[1]
+        n_list.append(name)
+
+    return n_list
 
 
 class ServiceVehicles(Service):
+    list_vehicles = init_list_vehicles()
 
-    # @brief : Return all vehicle of the list
-    # @return : list of dictionary
-    # @rpc(_returns=AnyDict)
-    # def get_vehicles(self):
-    #     return init_list_vehicles()
+    @rpc(_returns=Iterable(Unicode))
+    def get_vehicles_info(self):
+        for info in ServiceVehicles.list_vehicles:
+            yield u'%s' % info
 
-    # @rpc(Unicode, Integer, _returns=Iterable(Unicode))
-    # def say_hello(self, name, times):
-    #     for i in range(times):
-    #         yield u'Hello, %s' % name
-    #
+    @rpc(_returns=Iterable(Unicode))
+    def get_vehicles_names(self):
+        n_list = get_names_vehicles(ServiceVehicles.list_vehicles)
+        for info in n_list:
+            yield u'%s' % info
 
-    @rpc(Integer, Integer, _returns=Integer)
-    def addition(self, a, b):
-        return a + b
 
 
 application = Application(
     services=[ServiceVehicles],
-    tns='http://tests.python-zeep.org/',
+    tns='spyne.electric.vehicles',
     in_protocol=Soap11(validator='lxml'),
     out_protocol=Soap11())
 
 wsgi_application = WsgiApplication(application)
-
 
 if __name__ == '__main__':
     import logging
