@@ -8,29 +8,28 @@ from serviceVehicles import Vehicle, VehicleList
 
 
 def init_list_vehicles():
-    list = VehicleList()
+    v_list = VehicleList()
 
     with open('vehicles.json', 'r') as f:
         vehicles = json.load(f)
 
     for car in vehicles:
-        list.add_vehicle(Vehicle(vehicles[car]["model"],
-                                 vehicles[car]["brand"],
-                                 vehicles[car]["autonomy"],
-                                 vehicles[car]["refill"]))
-    print(list)
-    return list
-
-
-list_vehicles = init_list_vehicles()
+        v_list.add_vehicle(Vehicle(vehicles[car]["model"],
+                                   vehicles[car]["brand"],
+                                   vehicles[car]["autonomy"],
+                                   vehicles[car]["refill"]))
+    print(v_list)
+    return v_list
 
 
 class ServiceVehicles(Service):
+    list_vehicles = init_list_vehicles()
+
     # @brief : Return all vehicle of the list
     # @return : list of dictionary
     @rpc(_returns=Unicode)
     def display_vehicles(self):
-        data = list_vehicles.get_all()
+        data = ServiceVehicles.list_vehicles.get_all()
         for vehicle in data:
             yield vehicle.get_dict()
 
@@ -38,13 +37,13 @@ class ServiceVehicles(Service):
     # @return : list of dictionary
     @rpc(Unicode, _returns=Unicode)
     def get_vehicle_bymodel(self, model):
-        yield list_vehicles.find_bymodel(model)
+        yield ServiceVehicles.list_vehicles.find_bymodel(model)
 
     # @brief : Return all vehicle of the input brand
     # @return : list of dictionary
     @rpc(Unicode, _returns=Unicode)
     def get_vehicle_bybrand(self, brand):
-        return list_vehicles.find_bybrand(brand)
+        return ServiceVehicles.list_vehicles.find_bybrand(brand)
 
     @rpc(Unicode, Integer, _returns=Iterable(Unicode))
     def say_hello(self, name, times):
