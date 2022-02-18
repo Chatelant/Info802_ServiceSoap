@@ -1,1 +1,1 @@
-worker: python serviceSoap.py --log-file -
+worker: python serviceSoap.py runserver 0.0.0.0:35000
