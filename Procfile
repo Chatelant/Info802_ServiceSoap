@@ -1,1 +1,1 @@
-web: python serviceSoap.py --log-file -
+worker: python serviceSoap.py --log-file -
