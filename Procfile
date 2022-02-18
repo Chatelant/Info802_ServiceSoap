@@ -1,1 +1,1 @@
-web: python serviceSoap.py
+worker: python serviceSoap.py
