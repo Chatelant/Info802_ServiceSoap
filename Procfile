@@ -1,2 +1,2 @@
-worker: python serviceSoap.py runserver 0.0.0.0:35000
+worker: python serviceSoap.py
 heroku ps:scale worker=1
