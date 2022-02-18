@@ -1,1 +1,1 @@
-worker: spyne<serviceSoap.py>.wsgi
+worker: serviceSoap.py
