@@ -84,5 +84,5 @@ if __name__ == '__main__':
     logging.info(f"listening to http://{url}:{port}")
     logging.info(f"wsdl is at: http://{url}:{port}/?wsdl")
 
-    server = make_server(url, os.environ.get("PORT", port), wsgi_application)
+    server = make_server(url, os.environ.get('PORT', port), wsgi_application)
     server.serve_forever()
