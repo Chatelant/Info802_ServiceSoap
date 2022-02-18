@@ -79,10 +79,10 @@ if __name__ == '__main__':
     # Config server
     url = '0.0.0.0'
     port = 35000
+    os.environ.get('PORT', port)
 
+    # logging.info(f"listening to http://{url}:{port}")
+    # logging.info(f"wsdl is at: http://{url}:{port}/?wsdl")
 
-    logging.info(f"listening to http://{url}:{port}")
-    logging.info(f"wsdl is at: http://{url}:{port}/?wsdl")
-
-    server = make_server(url, os.environ.get('PORT', port), wsgi_application)
+    server = make_server(url, port, wsgi_application)
     server.serve_forever()
