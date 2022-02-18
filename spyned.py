@@ -1,61 +1,59 @@
 import json
 
-from spyne import Application, rpc, Service, Integer, Iterable, Unicode
+from spyne import Application, rpc, Service, Iterable, Unicode
 from spyne.protocol.soap import Soap11
 from spyne.server.wsgi import WsgiApplication
 
-
-class VehicleList:
-    def __init__(self):
-        self.v_list = []
-
-
-class Vehicle:
-    def __init__(self, model, brand, autonomy, refill):
-        self.model = model
-        self.brand = brand
-        self.autonomy = autonomy
-        self.refill = refill
+from serviceVehicles import VehicleList, Vehicle
 
 
 def init_list_vehicles():
-    v_list = []
+    v_list = VehicleList()
 
     with open('vehicles.json', 'r') as f:
         vehicles = json.load(f)
 
     for car in vehicles:
-        car_info = str(vehicles[car]["brand"]) + ";" + str(vehicles[car]["model"]) + ";" + str(vehicles[car]["autonomy"]) + ";" + str(vehicles[car]["refill"])
-        v_list.append(car_info)
+        v_list.add_vehicle(Vehicle(car, vehicles[car]["model"], vehicles[car]["brand"], vehicles[car]["autonomy"],
+                                   vehicles[car]["refill"]))
 
     return v_list
-
-
-def get_names_vehicles(v_list):
-    n_list = []
-
-    for vehicle in v_list:
-        info = vehicle.split(";")
-        name = info[0] + " " + info[1]
-        n_list.append(name)
-
-    return n_list
 
 
 class ServiceVehicles(Service):
     list_vehicles = init_list_vehicles()
 
+    # envoie la liste des véhicules et leurs informations
     @rpc(_returns=Iterable(Unicode))
-    def get_vehicles_info(self):
-        for info in ServiceVehicles.list_vehicles:
+    def get_vehicles(self):
+        v_list = ServiceVehicles.list_vehicles.get_all()
+        for car in v_list:
+            info = car.convert_to_string()
             yield u'%s' % info
 
+    # envoie la liste des noms des véhicules
     @rpc(_returns=Iterable(Unicode))
     def get_vehicles_names(self):
-        n_list = get_names_vehicles(ServiceVehicles.list_vehicles)
-        for info in n_list:
-            yield u'%s' % info
+        n_list = ServiceVehicles.list_vehicles.get_all()
+        for car in n_list:
+            name = car.get_name()
+            yield u'%s' % str(name)
 
+    # envoie les informations d'un véhicule, identifié par son nom
+    @rpc(Unicode, _returns=Unicode)
+    def get_vehicle_info(self, name):
+        res = Vehicle("", "", "", "", "")
+        v_list = ServiceVehicles.list_vehicles.get_all()
+
+        for car in v_list:
+            if car.get_name() == name:
+                res = car
+                break
+
+        if res.get_name() != "":
+            return u'%s' % res.convert_to_string()
+        else:
+            return u''
 
 
 application = Application(
