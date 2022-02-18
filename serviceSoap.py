@@ -1,9 +1,11 @@
 import json
+import logging
+import os
+from wsgiref.simple_server import make_server
 
 from spyne import Application, rpc, Service, Iterable, Unicode
 from spyne.protocol.soap import Soap11
 from spyne.server.wsgi import WsgiApplication
-import os
 
 from serviceVehicles import VehicleList, Vehicle
 
@@ -57,18 +59,14 @@ class ServiceVehicles(Service):
             return u''
 
 
-application = Application(
-    services=[ServiceVehicles],
-    tns='spyne.electric.vehicles',
-    in_protocol=Soap11(validator='lxml'),
-    out_protocol=Soap11())
+# application = Application(
+#     services=[ServiceVehicles],
+#     tns='spyne.electric.vehicles',
+#     in_protocol=Soap11(validator='lxml'),
+#     out_protocol=Soap11())
 
-wsgi_application = WsgiApplication(application)
 
 if __name__ == '__main__':
-    import logging
-    from wsgiref.simple_server import make_server
-
     logging.basicConfig(level=logging.DEBUG)
     logging.getLogger('spyne.protocol.xml').setLevel(logging.DEBUG)
 
@@ -84,5 +82,10 @@ if __name__ == '__main__':
     # logging.info(f"listening to http://{url}:{port}")
     # logging.info(f"wsdl is at: http://{url}:{port}/?wsdl")
 
+    app = Application([ServiceVehicles], 'spyne.examples.vehicle.http',
+                      in_protocol=Soap11(validator='lxml'),
+                      out_protocol=Soap11(),
+                      )
+    wsgi_application = WsgiApplication(app)
     server = make_server(url, port, wsgi_application)
     server.serve_forever()
