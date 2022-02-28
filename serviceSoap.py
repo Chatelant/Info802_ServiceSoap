@@ -84,7 +84,8 @@ if __name__ == '__main__':
     # port = 8000
 
     # Config server
-    url = '127.0.0.1'
+    # url = '127.0.0.1'
+    url = '0.0.0.0'
     port = 35000
     os.environ.get('PORT', 35000)
 
