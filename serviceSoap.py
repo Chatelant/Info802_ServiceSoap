@@ -86,8 +86,8 @@ if __name__ == '__main__':
     # Config server
     # url = '127.0.0.1'
     url = '0.0.0.0'
-    port = 35000
-    os.environ.get('PORT', 35000)
+    port = int(os.environ.get('PORT', 35000))
+
 
     logging.info(f"listening to http://{url}:{port}")
     logging.info(f"wsdl is at: http://{url}:{port}/?wsdl")
