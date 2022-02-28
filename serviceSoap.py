@@ -3,9 +3,18 @@ import logging
 import os
 from wsgiref.simple_server import make_server
 
-from spyne import Application, rpc, Service, Iterable, Unicode
-from spyne.protocol.soap import Soap11
-from spyne.server.wsgi import WsgiApplication
+# from spyne import Application, rpc, Service, Iterable, Unicode
+# from spyne.protocol.soap import Soap11
+# from spyne.server.wsgi import WsgiApplication
+
+from rpclib.application import Application
+from rpclib.decorator import srpc
+from rpclib.protocol.soap import Soap11
+from rpclib.service import ServiceBase
+from rpclib.model.complex import Iterable
+from rpclib.model.primitive import Integer
+from rpclib.model.primitive import String
+from rpclib.server.wsgi import WsgiApplication
 
 from serviceVehicles import VehicleList, Vehicle
 
@@ -23,28 +32,28 @@ def init_list_vehicles():
     return v_list
 
 
-class ServiceVehicles(Service):
+class ServiceVehicles(ServiceBase):
     list_vehicles = init_list_vehicles()
 
     # envoie la liste des véhicules et leurs informations
-    @rpc(_returns=Iterable(Unicode))
-    def get_vehicles(self):
+    @srpc(_returns=Iterable(String))
+    def get_vehicles():
         v_list = ServiceVehicles.list_vehicles.get_all()
         for car in v_list:
             info = car.convert_to_string()
             yield u'%s' % info
 
     # envoie la liste des noms des véhicules
-    @rpc(_returns=Iterable(Unicode))
-    def get_vehicles_names(self):
+    @srpc(_returns=Iterable(String))
+    def get_vehicles_names():
         n_list = ServiceVehicles.list_vehicles.get_all()
         for car in n_list:
             name = car.get_name()
             yield u'%s' % str(name)
 
     # envoie les informations d'un véhicule, identifié par son nom
-    @rpc(Unicode, _returns=Unicode)
-    def get_vehicle_info(self, name):
+    @srpc(String, _returns=String)
+    def get_vehicle_info(name):
         res = Vehicle("", "", "", "", "")
         v_list = ServiceVehicles.list_vehicles.get_all()
 
@@ -75,12 +84,12 @@ if __name__ == '__main__':
     # port = 8000
 
     # Config server
-    url = '0.0.0.0'
+    url = '127.0.0.1'
     port = 35000
     os.environ.get('PORT', 35000)
 
-    # logging.info(f"listening to http://{url}:{port}")
-    # logging.info(f"wsdl is at: http://{url}:{port}/?wsdl")
+    logging.info(f"listening to http://{url}:{port}")
+    logging.info(f"wsdl is at: http://{url}:{port}/?wsdl")
 
     app = Application([ServiceVehicles], 'spyne.examples.vehicle.http',
                       in_protocol=Soap11(validator='lxml'),
